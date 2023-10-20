@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-type Moviw struct {
+type Movie struct {
 	ID       string    `json:"id"`
 	Isbn     string    `json:"isbn"`
 	Title    string    `json:"title"`
@@ -22,7 +22,7 @@ type Director struct {
 	Lastname  string `json:"lastname"`
 }
 
-var movies []Moviw
+var movies []Movie
 
 func getMovies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -54,7 +54,7 @@ func deleteMovie(w http.ResponseWriter, r *http.Request) {
 
 func createMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var movie Moviw
+	var movie Movie
 	_ = json.NewDecoder(r.Body).Decode(&movie)
 	movie.ID = strconv.Itoa(rand.Intn(1000000))
 	movies = append(movies, movie)
@@ -67,7 +67,7 @@ func updateMovie(w http.ResponseWriter, r *http.Request) {
 	for index, item := range movies {
 		if item.ID == params["id"] {
 			movies = append(movies[:index], movies[index+1:]...)
-			var movie Moviw
+			var movie Movie
 			_ = json.NewDecoder(r.Body).Decode(&movie)
 			movie.ID = params["id"]
 			movies = append(movies, movie)
@@ -80,8 +80,8 @@ func updateMovie(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := mux.NewRouter()
 
-	movies = append(movies, Moviw{ID: "1", Isbn: "43227", Title: "Movie One", Director: &Director{Fisrtname: "John", Lastname: "Doe"}})
-	movies = append(movies, Moviw{ID: "2", Isbn: "45455", Title: "Movie Two", Director: &Director{Fisrtname: "Steve", Lastname: "Smith"}})
+	movies = append(movies, Movie{ID: "1", Isbn: "43227", Title: "Movie One", Director: &Director{Fisrtname: "John", Lastname: "Doe"}})
+	movies = append(movies, Movie{ID: "2", Isbn: "45455", Title: "Movie Two", Director: &Director{Fisrtname: "Steve", Lastname: "Smith"}})
 
 	r.HandleFunc("/movies", getMovies).Methods("GET")
 	r.HandleFunc("/movies/{id}", getMovie).Methods("GET")
